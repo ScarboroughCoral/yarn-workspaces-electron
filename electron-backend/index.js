@@ -2,6 +2,24 @@ let electron = require('electron');
 let { app, BrowserWindow } = require('electron');
 let { fork } = require('child_process');
 let path = require('path');
+
+const AdmZip = require('adm-zip');
+const { readdir, rmdir } = require('fs');
+
+const idle = () => Promise.resolve()
+
+const serialConsume = (next, count = 0, task = next(count)) => {
+  return task ? task().then(() => serialConsume(next, count + 1)) : idle()
+}
+const serial = tasks => {
+  return serialConsume(index => tasks[index])
+}
+const parallel = tasks => {
+  return Promise.all(tasks.map(task => task())).then(idle)
+}
+const batch = (tasks, batchSize) => {
+  return parallel(Array.from({ length: batchSize }, () => () => serialConsume(() => tasks.shift())))
+}
 const isDev = require('electron-is-dev');
 
 let findOpenSocket = require('./src/socket-helpers');
@@ -126,6 +144,34 @@ app.on('activate', async () => {
   }
 });
 
+const handleProcessZipBatchMain = async () => {
+  // The FE will udpate the redux store
+    console.log(`[Main] Process zip extract`);
+    
+    const start = new Date().getTime();
+    const base = path.resolve(__dirname, 'zips')
+    const targetBase = path.resolve(__dirname, 'unzips')
+    await new Promise((resolve, reject) => {
+      rmdir(targetBase, { recursive: true }, err => {
+        if (err) reject(err)
+        else resolve()
+      }
+      )
+    }
+    )
+    const entries = await new Promise((resolve, reject) => {
+      readdir(base, (err, entries) => {
+        if (err) reject(err)
+        else resolve(entries)
+      })
+    })
+    await serial(entries.map(entry => () => new Promise((resolve, reject) => {
+      new AdmZip(path.resolve(base, entry)).extractAllTo(path.resolve(targetBase, entry), true)
+      resolve()
+    })))
+    const end = new Date().getTime();
+    return `Main Processed ${entries.length} zips in ${end - start}ms`;
+};
 // Add extensions: https://github.com/MarshallOfSound/electron-devtools-installer
 app.whenReady().then(() => {
   if (FE_ENABLE_DEV_TOOLS) {
@@ -145,4 +191,7 @@ app.whenReady().then(() => {
     app.relaunch();
     app.exit();
   });
+  ipcMain.handle('extract-zip', () => {
+    return handleProcessZipBatchMain()
+  })
 });

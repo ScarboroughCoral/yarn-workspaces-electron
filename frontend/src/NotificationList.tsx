@@ -9,6 +9,7 @@ type Props = {
   handleReset: () => void;
   handleProcessZipBatchFE: () => void;
   handleProcessZipBatch: () => void;
+  handleProcessZipBatchMain: () => void;
 };
 
 const NotificationList = ({
@@ -17,7 +18,8 @@ const NotificationList = ({
   handleProcessImageBatch,
   handleReset,
   handleProcessZipBatchFE,
-  handleProcessZipBatch
+  handleProcessZipBatch,
+  handleProcessZipBatchMain
 }: Props) => (
   <div>
     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
@@ -26,6 +28,7 @@ const NotificationList = ({
       <button onClick={handleReset}>RESET</button>
       <button onClick={handleProcessZipBatchFE}>handle Process Zip Batch FE</button>
       <button onClick={handleProcessZipBatch}>handle Process Zip Batch BE</button>
+      <button onClick={handleProcessZipBatchMain}>handle Process Zip Batch Main</button>
     </div>
 
     <ul>

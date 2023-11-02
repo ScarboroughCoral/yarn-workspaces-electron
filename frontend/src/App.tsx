@@ -6,6 +6,7 @@ import { send } from './API/utils';
 import NotificationList from './NotificationList';
 import loadingJson from './assets/loading-rainbow.json';
 import bgJson from './assets/bg-pc.json';
+import { ipcRenderer } from 'electron'
 
 import AdmZip from 'adm-zip';
 import { readdir, rmdir } from 'fs';
@@ -88,7 +89,12 @@ const App = () => {
       }));
       return true;
   };
-
+  const handleProcessZipBatchMain = async () => {
+    const result = await ipcRenderer.invoke('extract-zip')
+    dispatch(ACTIONS.addNotification({
+      text: String(result),
+    }));
+  }
   const handleReset = async () => {
     dispatch(ACTIONS.resetState());
   };
@@ -122,6 +128,7 @@ const App = () => {
         handleReset={handleReset}
         handleProcessZipBatchFE={handleProcessZipBatchFE}
         handleProcessZipBatch={handleProcessZipBatch}
+        handleProcessZipBatchMain={handleProcessZipBatchMain}
       />
     </div>
   );
