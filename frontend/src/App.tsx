@@ -106,7 +106,7 @@ const App = () => {
       <h1 style={{ marginTop: 0 }}>Offline Image Processsing App</h1>
       <br />
       {/* @ts-ignore */}
-      <Lottie animationData={bgJson} style={{ width: '192', height: '72' }} renderer={'canvas'} />
+      <Lottie animationData={bgJson} style={{ width: '192', height: '72' }}  />
       {/* <img
         src="https://react.dev/favicon.ico"
         className="rotate linear infinite"
