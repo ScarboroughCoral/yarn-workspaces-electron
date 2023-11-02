@@ -4,7 +4,8 @@ shared/build
 electron-backend/dist
 electron-backend/build-backend
 electron-backend/build-frontend
-
+electron-backend/zips/*.zip
+electron-backend/unzips/*.zip
 # Logs
 logs
 *.log

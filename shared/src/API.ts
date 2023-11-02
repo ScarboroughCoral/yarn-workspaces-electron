@@ -21,9 +21,15 @@ export namespace BE {
     }: {
       type: 'PROCESS_IMAGE_BATCH';
     }) => Promise<boolean>;
+    PROCESS_ZIP_EXTRACT: ({
+      type
+    }: {
+      type: 'PROCESS_ZIP_EXTRACT';
+    }) => Promise<boolean>;
   };
 
   export type Messages =
+    | Parameters<MessageHandler['PROCESS_ZIP_EXTRACT']>[0]
     | Parameters<MessageHandler['PROCESS_IMAGE_ASYNC']>[0]
     | Parameters<MessageHandler['PROCESS_IMAGE_BATCH']>[0];
 }
