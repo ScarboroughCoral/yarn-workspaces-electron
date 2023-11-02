@@ -43,7 +43,7 @@ const App = () => {
       <h1 style={{ marginTop: 0 }}>Offline Image Processsing App</h1>
       <br />
       <img
-        src="https://upload.wikimedia.org/wikipedia/en/7/77/EricCartman.png"
+        src="https://react.dev/favicon.ico"
         className="rotate linear infinite"
         alt="img"
         width="80"
